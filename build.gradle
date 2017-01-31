@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+version = '1.0'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'ExcelTaImport',
+                   'Implementation-Version': version
+    }
+}
+
+task execute (type:JavaExec) {
+    main = "io.braendli.importer.Importer"
+    classpath = sourceSets.main.runtimeClasspath
+    //debug = true
+    systemProperty "java.library.path", "${buildDir}" + "/../lib"
+}
+
+dependencies {
+    compile group: 'org.apache.poi', name: 'poi', version: '3.15'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
+
+    compile group: 'org.firebirdsql.jdbc', name: 'jaybird-jdk17', version: '2.2.10'
+}
+
+repositories {
+    mavenCentral()
+}
