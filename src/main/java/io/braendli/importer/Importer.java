@@ -1,40 +1,40 @@
 package io.braendli.importer;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.StreamSupport.stream;
 
 public class Importer {
     public static void main(String[] args) {
-        readExcel();
+        insertData(readExcel());
     }
 
-    private static void readExcel() {
+    private static List<List<Cell>> readExcel() {
         try (InputStream inp = Importer.class.getResourceAsStream("/test_users.xlsx")) {
             Workbook wb = WorkbookFactory.create(inp);
             Sheet sheet = wb.getSheetAt(0);
-            Row row = sheet.getRow(2);
-            if (row == null) {
-                row = sheet.createRow(2);
-            }
-            Cell cell = row.getCell(3);
-            if (cell == null)
-                cell = row.createCell(3);
-            cell.setCellType(CellType.STRING);
-            cell.setCellValue("a test");
 
-            // Write the output to a file
-            FileOutputStream fileOut = new FileOutputStream("workbook.xls");
-            wb.write(fileOut);
-            fileOut.close();
-        } catch (Exception e) {
+            return stream(sheet.spliterator(), false)
+                    .map(r -> stream(r.spliterator(), false).collect(toList()))
+                    .collect(toList());
+        } catch (IOException|InvalidFormatException e) {
             e.printStackTrace();
         }
+        return emptyList();
     }
 
-    private static void insertData() {
+    private static void insertData(List<List<Cell>> lists) {
         String conString = "jdbc:firebirdsql:embedded:C:/Program Files/SafeScan/TA/TADATA.FDB?encoding=NONE";
 
         try (Connection con = DriverManager.getConnection(conString, "SYSDBA", "a")) {
