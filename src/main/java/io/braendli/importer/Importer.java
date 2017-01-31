@@ -25,7 +25,7 @@ public class Importer {
             Workbook wb = WorkbookFactory.create(inp);
             Sheet sheet = wb.getSheetAt(0);
 
-            return stream(sheet.spliterator(), false)
+            return stream(sheet.spliterator(), false).skip(1)
                     .map(r -> stream(r.spliterator(), false).collect(toList()))
                     .collect(toList());
         } catch (IOException|InvalidFormatException e) {
@@ -34,19 +34,22 @@ public class Importer {
         return emptyList();
     }
 
-    private static void insertData(List<List<Cell>> lists) {
+    private static void insertData(List<List<Cell>> list) {
         String conString = "jdbc:firebirdsql:embedded:C:/Program Files/SafeScan/TA/TADATA.FDB?encoding=NONE";
 
         try (Connection con = DriverManager.getConnection(conString, "SYSDBA", "a")) {
-            String sql = String.format("INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME) VALUES(%1$s, %1$s, ?, ?)", "coalesce((select max(id) + 1 from users), 100)");
+            String sql = String.format("INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME, IDCARD) VALUES(%1$s, %1$s, ?, ?, ?)", "coalesce((select max(id) + 1 from users), 100)");
+
 
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
-                int pos = 1;
-                stmt.setString(pos++, "Höri");
-                stmt.setString(pos++, "Müller");
-                stmt.execute();
+                for (List<Cell> row : list) {
+                    int pos = 1;
+                    stmt.setString(pos++, row.get(pos - 2).getStringCellValue());
+                    stmt.setString(pos++, row.get(pos - 2).getStringCellValue());
+                    stmt.setInt(pos++, (int) row.get(pos - 2).getNumericCellValue());
+                    stmt.execute();
+                }
             }
-            printContent("USERS", con);
         } catch (Exception e) {
             e.printStackTrace();
         }
