@@ -5,8 +5,8 @@ version = '1.0'
 compileJava.options.encoding = 'UTF-8'
 
 mainClassName = "io.braendli.importer.Importer"
-applicationDefaultJvmArgs = ["-Djava.library.path=" + "${buildDir}" + "/../lib",
-                             "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
+applicationDefaultJvmArgs = ["-Djava.library.path=" + "${buildDir}" + "/../lib"
+                             ]//*/, "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"]
 
 dependencies {
     compile group: 'org.apache.poi', name: 'poi', version: '3.15'
