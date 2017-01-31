@@ -38,11 +38,10 @@ public class Importer {
         String conString = "jdbc:firebirdsql:embedded:C:/Program Files/SafeScan/TA/TADATA.FDB?encoding=NONE";
 
         try (Connection con = DriverManager.getConnection(conString, "SYSDBA", "a")) {
-            String sql = "INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME) VALUES(coalesce((select max(id) + 1 from users), 100), ?, ?, ?)";
+            String sql = String.format("INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME) VALUES(%1$s, %1$s, ?, ?)", "coalesce((select max(id) + 1 from users), 100)");
 
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 int pos = 1;
-                stmt.setString(pos++, "hörim");
                 stmt.setString(pos++, "Höri");
                 stmt.setString(pos++, "Müller");
                 stmt.execute();
