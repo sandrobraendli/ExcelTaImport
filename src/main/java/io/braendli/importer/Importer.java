@@ -11,21 +11,29 @@ import java.sql.*;
 
 public class Importer {
     public static void main(String[] args) {
-        try {
-            String connectionString = "jdbc:firebirdsql:embedded:C:/Program Files/SafeScan/TA/TADATA.FDB";
+        String conString = "jdbc:firebirdsql:embedded:C:/Program Files/SafeScan/TA/TADATA.FDB?encoding=NONE";
 
-            try (Connection con = DriverManager.getConnection(connectionString, "SYSDBA", "a")) {
-                DatabaseMetaData md = con.getMetaData();
-                //printTables(md);
-                //printColumns("USERS", md);
-                printContent("USERS", con);
+        try (Connection con = DriverManager.getConnection(conString, "SYSDBA", "a")) {
+            String sql = "INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME) VALUES(coalesce((select max(id) + 1 from users), 0), ?, ?, ?)";
 
-            } catch (Exception e) {
-                e.printStackTrace();
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                int pos = 1;
+                stmt.setString(pos++, "hörim");
+                stmt.setString(pos++, "Höri");
+                stmt.setString(pos++, "Müller");
+                stmt.execute();
             }
+            printContent("USERS", con);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static void printTablesColumnsContents(Connection con) throws SQLException {
+        DatabaseMetaData md = con.getMetaData();
+        printTables(md);
+        printColumns("USERS", md);
+        printContent("USERS", con);
     }
 
     private static void printContent(String table, Connection con) throws SQLException {
