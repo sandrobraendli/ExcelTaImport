@@ -3,18 +3,42 @@ package io.braendli.importer;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.*;
 
 public class Importer {
     public static void main(String[] args) {
+        readExcel();
+    }
+
+    private static void readExcel() {
+        try (InputStream inp = Importer.class.getResourceAsStream("/test_users.xlsx")) {
+            Workbook wb = WorkbookFactory.create(inp);
+            Sheet sheet = wb.getSheetAt(0);
+            Row row = sheet.getRow(2);
+            if (row == null) {
+                row = sheet.createRow(2);
+            }
+            Cell cell = row.getCell(3);
+            if (cell == null)
+                cell = row.createCell(3);
+            cell.setCellType(CellType.STRING);
+            cell.setCellValue("a test");
+
+            // Write the output to a file
+            FileOutputStream fileOut = new FileOutputStream("workbook.xls");
+            wb.write(fileOut);
+            fileOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void insertData() {
         String conString = "jdbc:firebirdsql:embedded:C:/Program Files/SafeScan/TA/TADATA.FDB?encoding=NONE";
 
         try (Connection con = DriverManager.getConnection(conString, "SYSDBA", "a")) {
-            String sql = "INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME) VALUES(coalesce((select max(id) + 1 from users), 0), ?, ?, ?)";
+            String sql = "INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME) VALUES(coalesce((select max(id) + 1 from users), 100), ?, ?, ?)";
 
             try (PreparedStatement stmt = con.prepareStatement(sql)) {
                 int pos = 1;
@@ -69,24 +93,5 @@ public class Importer {
                 System.out.println(rs.getString(3));
             }
         }
-    }
-
-    private static void readExcel() throws IOException, InvalidFormatException {
-        InputStream inp = new FileInputStream("workbook.xls");
-        //InputStream inp = new FileInputStream("workbook.xlsx");
-
-        Workbook wb = WorkbookFactory.create(inp);
-        Sheet sheet = wb.getSheetAt(0);
-        Row row = sheet.getRow(2);
-        Cell cell = row.getCell(3);
-        if (cell == null)
-            cell = row.createCell(3);
-        cell.setCellType(CellType.STRING);
-        cell.setCellValue("a test");
-
-        // Write the output to a file
-        FileOutputStream fileOut = new FileOutputStream("workbook.xls");
-        wb.write(fileOut);
-        fileOut.close();
     }
 }

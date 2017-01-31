@@ -1,22 +1,12 @@
-apply plugin: 'java'
+apply plugin: 'application'
 
 version = '1.0'
 
 compileJava.options.encoding = 'UTF-8'
 
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'ExcelTaImport',
-                   'Implementation-Version': version
-    }
-}
-
-task execute (type:JavaExec) {
-    main = "io.braendli.importer.Importer"
-    classpath = sourceSets.main.runtimeClasspath
-    //debug = true
-    systemProperty "java.library.path", "${buildDir}" + "/../lib"
-}
+mainClassName = "io.braendli.importer.Importer"
+applicationDefaultJvmArgs = ["-Djava.library.path=" + "${buildDir}" + "/../lib",
+                             "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"]
 
 dependencies {
     compile group: 'org.apache.poi', name: 'poi', version: '3.15'
