@@ -14,6 +14,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
+import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.IOException;
 
@@ -25,18 +26,15 @@ public class ImportForm extends Application {
     private Button importButton;
     @FXML
     private TextField excelField;
-    private File excelFile;
     @FXML
     private TextField databaseField;
-    private File databaseFile;
 
     @FXML
     public void handleChooseExcel() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Excel Datei wählen");
         fileChooser.getExtensionFilters().add(new ExtensionFilter("Excel Dateien", "*.xlsx"));
-        excelFile = fileChooser.showOpenDialog(stage);
-        updateTextField(excelField, excelFile);
+        updateTextField(excelField, fileChooser.showOpenDialog(stage));
     }
 
     @FXML
@@ -44,12 +42,11 @@ public class ImportForm extends Application {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Datenbank wählen");
         fileChooser.getExtensionFilters().add(new ExtensionFilter("Datenbanken", "*.FDB"));
-        databaseFile = fileChooser.showOpenDialog(stage);
-        updateTextField(databaseField, databaseFile);
+        updateTextField(databaseField, fileChooser.showOpenDialog(stage));
     }
 
     private void updateTextField(TextField field, File file) {
-        field.setText(file != null ? file.getAbsolutePath() : null);
+        field.setText(file != null && file.exists() ? file.getAbsolutePath() : null);
     }
 
     @FXML
@@ -59,7 +56,16 @@ public class ImportForm extends Application {
 
     @FXML
     public void initialize() {
+        File homeDirectory = FileSystemView.getFileSystemView().getHomeDirectory();
+        setIfExists(excelField, new File(System.getProperty("user.home"), "Desktop\\users.xlsx"));
+        setIfExists(databaseField, new File("C:\\Program Files\\SafeScan\\TA\\TADATA.FDB"));
         importButton.disableProperty().bind(excelField.textProperty().isEmpty().or(databaseField.textProperty().isEmpty()));
+    }
+
+    private void setIfExists(TextField textField, File file) {
+        if (file.exists()) {
+            textField.setText(file.getAbsolutePath());
+        }
     }
 
     public static void main(String[] args) {
@@ -78,6 +84,10 @@ public class ImportForm extends Application {
     }
 
     public void importData() {
-        Importer.importToDatabase(deleteOldDataBox.isSelected(), excelFile, databaseFile);
+        Importer.importToDatabase(
+            deleteOldDataBox.isSelected(),
+            new File(excelField.getText()),
+            new File(databaseField.getText())
+        );
     }
 }
