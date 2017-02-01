@@ -77,6 +77,6 @@ public class ImportForm extends Application {
     }
 
     public void importData() {
-        System.out.println("Blub");
+        Importer.importToDatabase(deleteOldDataBox.isSelected(), excelFile, databaseFile);
     }
 }
