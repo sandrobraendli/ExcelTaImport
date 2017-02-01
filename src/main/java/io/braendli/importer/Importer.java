@@ -54,46 +54,4 @@ public class Importer {
             e.printStackTrace();
         }
     }
-
-    private static void printTablesColumnsContents(Connection con) throws SQLException {
-        DatabaseMetaData md = con.getMetaData();
-        printTables(md);
-        printColumns("USERS", md);
-        printContent("USERS", con);
-    }
-
-    private static void printContent(String table, Connection con) throws SQLException {
-        try (Statement stmt = con.createStatement()) {
-            try (ResultSet rs = stmt.executeQuery(String.format("select * from %s", table))) {
-                printResultSet(rs);
-            }
-        }
-    }
-
-    private static void printColumns(String table, DatabaseMetaData md) throws SQLException {
-        try (ResultSet rs = md.getColumns(null, null, table, "%")) {
-            printResultSet(rs);
-        }
-    }
-
-    private static void printResultSet(ResultSet rs) throws SQLException {
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int columnsNumber = rsmd.getColumnCount();
-        while (rs.next()) {
-            for (int i = 1; i <= columnsNumber; i++) {
-                if (i > 1) System.out.print(",  ");
-                String columnValue = rs.getString(i);
-                System.out.print(columnValue + " " + rsmd.getColumnName(i));
-            }
-            System.out.println("");
-        }
-    }
-
-    private static void printTables(DatabaseMetaData md) throws SQLException {
-        try (ResultSet rs = md.getTables(null, null, "%", null)) {
-            while (rs.next()) {
-                System.out.println(rs.getString(3));
-            }
-        }
-    }
 }
