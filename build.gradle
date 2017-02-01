@@ -11,6 +11,15 @@ run {
     //debug = true
 }
 
+distributions {
+    main {
+        baseName = 'ExcelTaImport'
+        contents {
+            from { 'lib' } { into 'lib'}
+        }
+    }
+}
+
 dependencies {
     compile group: 'org.apache.poi', name: 'poi', version: '3.15'
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
