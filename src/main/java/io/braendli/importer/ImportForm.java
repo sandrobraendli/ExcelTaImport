@@ -46,7 +46,9 @@ public class ImportForm extends Application {
     }
 
     private void updateTextField(TextField field, File file) {
-        field.setText(file != null && file.exists() ? file.getAbsolutePath() : null);
+        if (file != null && file.exists()) {
+            field.setText(file.getAbsolutePath());
+        }
     }
 
     @FXML
@@ -56,16 +58,9 @@ public class ImportForm extends Application {
 
     @FXML
     public void initialize() {
-        File homeDirectory = FileSystemView.getFileSystemView().getHomeDirectory();
-        setIfExists(excelField, new File(System.getProperty("user.home"), "Desktop\\users.xlsx"));
-        setIfExists(databaseField, new File("C:\\Program Files\\SafeScan\\TA\\TADATA.FDB"));
+        updateTextField(excelField, new File(System.getProperty("user.home"), "Desktop\\users.xlsx"));
+        updateTextField(databaseField, new File("C:\\Program Files\\SafeScan\\TA\\TADATA.FDB"));
         importButton.disableProperty().bind(excelField.textProperty().isEmpty().or(databaseField.textProperty().isEmpty()));
-    }
-
-    private void setIfExists(TextField textField, File file) {
-        if (file.exists()) {
-            textField.setText(file.getAbsolutePath());
-        }
     }
 
     public static void main(String[] args) {
