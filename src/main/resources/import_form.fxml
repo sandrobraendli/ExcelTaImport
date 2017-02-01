@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<GridPane hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.braendli.importer.ImportForm">
+    <padding><Insets bottom="10" left="10" right="10" top="10" /></padding>
+
+    <Text text="Import" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
+      <font>
+         <Font name="System Bold" size="18.0" />
+      </font>
+    </Text>
+
+    <CheckBox text="Alte Daten löschen? (ID &gt;= 100)" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+
+    <TextField disable="true" editable="false" prefWidth="10000" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+    <Button minWidth="118" text="Excel-Datei wählen" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+    <TextField disable="true" editable="false" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+    <Button minWidth="118" text="Datenbank wählen" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+    <Button minWidth="118" text="Import starten" GridPane.columnIndex="1" GridPane.rowIndex="4">
+        <font>
+            <Font name="System Bold" />
+        </font>
+    </Button>
+</GridPane>
