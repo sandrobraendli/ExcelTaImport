@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -70,7 +71,7 @@ public class ImportForm extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/import_form.fxml"));
 
         Scene scene = new Scene(root, 500, -1);
-
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/app.png")));
         stage.setTitle("Excel TA Import");
         stage.setScene(scene);
         stage.show();
