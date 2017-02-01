@@ -4,7 +4,7 @@ version = '1.0'
 
 compileJava.options.encoding = 'UTF-8'
 
-mainClassName = "io.braendli.importer.Importer"
+mainClassName = "io.braendli.importer.ImportForm"
 
 if (gradle.startParameter.taskNames.contains("distZip")) {
     applicationDefaultJvmArgs = ["-Djava.library.path=MY_APP_HOME/lib"]
