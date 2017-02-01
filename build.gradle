@@ -1,3 +1,7 @@
+plugins {
+    id 'edu.sc.seis.launch4j' version '2.3.0'
+}
+
 apply plugin: 'application'
 
 version = '1.0'
@@ -8,6 +12,13 @@ mainClassName = "io.braendli.importer.ImportForm"
 
 if (gradle.startParameter.taskNames.contains("distZip")) {
     applicationDefaultJvmArgs = ["-Djava.library.path=MY_APP_HOME/lib"]
+}
+
+launch4j {
+    mainClassName = project.mainClassName
+    icon = '../../src/main/resources/icons/app.ico'
+    chdir = '.'
+    jvmOptions = ['-Djava.library.path=lib']
 }
 
 startScripts {
@@ -22,20 +33,14 @@ run {
     //debug = true
 }
 
-distributions {
-    main {
-        baseName = 'ExcelTaImport'
-        contents {
-            from { 'lib' } { into 'lib'}
-        }
-    }
-}
-
 dependencies {
     compile group: 'org.apache.poi', name: 'poi', version: '3.15'
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
 
     compile group: 'org.firebirdsql.jdbc', name: 'jaybird-jdk17', version: '2.2.10'
+
+    compile files('lib/jaybird22.dll')
+    compile files('lib/jaybird22_x64.dll')
 }
 
 repositories {
