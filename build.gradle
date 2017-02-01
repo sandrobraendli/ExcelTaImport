@@ -6,6 +6,17 @@ compileJava.options.encoding = 'UTF-8'
 
 mainClassName = "io.braendli.importer.Importer"
 
+if (gradle.startParameter.taskNames.contains("distZip")) {
+    applicationDefaultJvmArgs = ["-Djava.library.path=MY_APP_HOME/lib"]
+}
+
+startScripts {
+    doLast {
+        unixScript.text = unixScript.text.replace('MY_APP_HOME', '\$APP_HOME')
+        windowsScript.text = windowsScript.text.replace('MY_APP_HOME', '%APP_HOME%')
+    }
+}
+
 run {
     systemProperty "java.library.path", "${buildDir}" + "/../lib"
     //debug = true
