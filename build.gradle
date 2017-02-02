@@ -8,17 +8,17 @@ version = '1.0'
 compileJava.options.encoding = 'UTF-8'
 
 launch4j {
-    mainClassName = "io.braendli.importer.ImportForm"
+    mainClassName = 'io.braendli.importer.ImportForm'
     icon = '../../src/main/resources/icons/app.ico'
     chdir = '.'
     jvmOptions = ['-Djava.library.path=lib']
 }
 
 dependencies {
-    compile group: 'org.apache.poi', name: 'poi', version: '3.15'
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
+    compile 'org.apache.poi:poi:3.15'
+    compile 'org.apache.poi:poi-ooxml:3.15'
 
-    compile group: 'org.firebirdsql.jdbc', name: 'jaybird-jdk17', version: '2.2.10'
+    compile 'org.firebirdsql.jdbc:jaybird-jdk17:2.2.10'
 
     compile 'org.controlsfx:controlsfx:8.40.12'
 
