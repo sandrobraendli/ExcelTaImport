@@ -4,6 +4,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,13 +17,18 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
 public class Importer {
+    private static final Logger LOG = LoggerFactory.getLogger(Importer.class);
+
     public static void importToDatabase(boolean deleteOldData, File excelFile, File databaseFile) throws Exception {
         try (Connection con = getDatabaseConnection(databaseFile)) {
+            LOG.info("Start reading exel file: {}", excelFile);
             List<List<Cell>> cells = readExcel(excelFile);
 
             if (deleteOldData) {
+                LOG.info("Deleting old data");
                 deleteOldData(con);
             }
+            LOG.info("Importing into database");
             insertData(cells, con);
         }
     }
@@ -35,6 +42,7 @@ public class Importer {
 
     private static Connection getDatabaseConnection(File databaseFile) throws SQLException {
         String conString = String.format("jdbc:firebirdsql:embedded:%s?encoding=NONE", databaseFile.getAbsolutePath());
+        LOG.info("Connecting to database: {}", conString);
         return DriverManager.getConnection(conString, "SYSDBA", "a");
     }
 
@@ -55,6 +63,7 @@ public class Importer {
 
         try (PreparedStatement stmt = con.prepareStatement(sql)) {
             for (List<Cell> row : list) {
+                LOG.debug("Importing user: {}", row);
                 int pos = 1;
                 stmt.setString(pos++, row.get(pos - 2).getStringCellValue());
                 stmt.setString(pos++, row.get(pos - 2).getStringCellValue());

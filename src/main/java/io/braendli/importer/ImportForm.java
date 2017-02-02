@@ -14,11 +14,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import org.controlsfx.control.NotificationPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 
 public class ImportForm extends Application {
+    private static final Logger LOG = LoggerFactory.getLogger(ImportForm.class);
+
     private Stage stage;
     private NotificationPane notification;
     @FXML
@@ -85,6 +89,7 @@ public class ImportForm extends Application {
     }
 
     public void importData() {
+        LOG.info("Starting import");
         try {
             Importer.importToDatabase(
                     deleteOldDataBox.isSelected(),
@@ -92,9 +97,10 @@ public class ImportForm extends Application {
                     new File(databaseField.getText())
             );
             notification.setText("Import erfolgreich abgeschlossen");
+            LOG.info("Import successful");
         } catch (Exception e) {
             notification.setText("Der Import ist fehlgeschlagen");
-            e.printStackTrace();
+            LOG.error("Import failed", e);
         } finally {
             notification.show();
         }

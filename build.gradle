@@ -22,6 +22,9 @@ dependencies {
 
     compile 'org.controlsfx:controlsfx:8.40.12'
 
+    compile 'org.slf4j:slf4j-api:1.7.22'
+    compile 'ch.qos.logback:logback-classic:1.1.9'
+
     compile files('lib/jaybird22.dll')
     compile files('lib/jaybird22_x64.dll')
 }
