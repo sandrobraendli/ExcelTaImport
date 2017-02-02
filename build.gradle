@@ -1,36 +1,17 @@
 plugins {
     id 'edu.sc.seis.launch4j' version '2.3.0'
 }
-
-apply plugin: 'application'
+apply plugin: 'java'
 
 version = '1.0'
 
 compileJava.options.encoding = 'UTF-8'
 
-mainClassName = "io.braendli.importer.ImportForm"
-
-if (gradle.startParameter.taskNames.contains("distZip")) {
-    applicationDefaultJvmArgs = ["-Djava.library.path=MY_APP_HOME/lib"]
-}
-
 launch4j {
-    mainClassName = project.mainClassName
+    mainClassName = "io.braendli.importer.ImportForm"
     icon = '../../src/main/resources/icons/app.ico'
     chdir = '.'
     jvmOptions = ['-Djava.library.path=lib']
-}
-
-startScripts {
-    doLast {
-        unixScript.text = unixScript.text.replace('MY_APP_HOME', '\$APP_HOME')
-        windowsScript.text = windowsScript.text.replace('MY_APP_HOME', '%APP_HOME%')
-    }
-}
-
-run {
-    systemProperty "java.library.path", "${buildDir}" + "/../lib"
-    //debug = true
 }
 
 dependencies {
@@ -38,6 +19,8 @@ dependencies {
     compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
 
     compile group: 'org.firebirdsql.jdbc', name: 'jaybird-jdk17', version: '2.2.10'
+
+    compile 'org.controlsfx:controlsfx:8.40.12'
 
     compile files('lib/jaybird22.dll')
     compile files('lib/jaybird22_x64.dll')

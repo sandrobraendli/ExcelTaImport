@@ -1,6 +1,5 @@
 package io.braendli.importer;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -8,29 +7,22 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
 public class Importer {
-    public static void importToDatabase(boolean deleteOldData, File excelFile, File databaseFile) {
-        try {
-            try (Connection con = getDatabaseConnection(databaseFile)) {
-                List<List<Cell>> cells = readExcel(excelFile);
+    public static void importToDatabase(boolean deleteOldData, File excelFile, File databaseFile) throws Exception {
+        try (Connection con = getDatabaseConnection(databaseFile)) {
+            List<List<Cell>> cells = readExcel(excelFile);
 
-                if (deleteOldData) {
-                    deleteOldData(con);
-                }
-
-                insertData(cells, con);
+            if (deleteOldData) {
+                deleteOldData(con);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            insertData(cells, con);
         }
     }
 
@@ -46,18 +38,16 @@ public class Importer {
         return DriverManager.getConnection(conString, "SYSDBA", "a");
     }
 
-    private static List<List<Cell>> readExcel(File excelFile) {
+    private static List<List<Cell>> readExcel(File excelFile) throws Exception {
         try (InputStream inp = new FileInputStream(excelFile)) {
             Workbook wb = WorkbookFactory.create(inp);
             Sheet sheet = wb.getSheetAt(0);
 
             return stream(sheet.spliterator(), false).skip(1)
                     .map(r -> stream(r.spliterator(), false).collect(toList()))
+                    .filter(l -> l.size() >= 3 && !l.contains(null))
                     .collect(toList());
-        } catch (IOException|InvalidFormatException e) {
-            e.printStackTrace();
         }
-        return emptyList();
     }
 
     private static void insertData(List<List<Cell>> list, Connection con) throws SQLException {
