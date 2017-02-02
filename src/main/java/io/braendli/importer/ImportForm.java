@@ -57,6 +57,7 @@ public class ImportForm extends Application {
     @FXML
     public void initialize() {
         updateTextField(excelField, new File(System.getProperty("user.home"), "Desktop\\users.xlsx"));
+        updateTextField(excelField, new File("users.xlsx"));
         updateTextField(databaseField, new File("C:\\Program Files\\SafeScan\\TA\\TADATA.FDB"));
         importButton.disableProperty().bind(excelField.textProperty().isEmpty().or(databaseField.textProperty().isEmpty()));
     }
