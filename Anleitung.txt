@@ -22,7 +22,18 @@ muss beibehalten werden. Der Import liest die Benutzer beginnend bei der zweiten
 
 ### App
 
-Log im Verzeichnis `log` prüfen.
+Zeigt die Applikation beim Import einen Fehler an, sollte das Log im Verzeichnis `log` geprüft werden.
+
+Der Quellcode der Applikation befindet sich auf [GitHub](https://github.com/sandrobraendli/ExcelTaImport). Zur 
+Entwicklung werden [IntelliJ IDEA Community](https://www.jetbrains.com/idea/download/#section=windows) und 
+[Java SE Development Kit 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 
+benötigt.
+
+Beim Debugging in IDEA ist es wichtig, dass die VM option `-Djava.library.path=lib` in der Run Configuration 
+gesetzt ist. Die Hauptklasse der Applikation ist `io.braendli.importer.ImportForm`.
+
+Um eine neue Version der Applikation zu erzeugen, muss `gradlew.bat createExe` ausgeführt werden. Die Applikation 
+wird dann unter `build\launch4j` erzeugt.
 
 
 ### Datenbank
