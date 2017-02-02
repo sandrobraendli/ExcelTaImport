@@ -1,0 +1,34 @@
+# ExcelTaImport
+
+
+## App
+
+Die App wird durch einen Doppelklick auf `ExcelTaImport.exe` gestartet. Falls die ensprechenden Dateien existieren, 
+werden Datenbank und Excel-Datei vorausgewählt. Die Datenbank wird unter `C:\Program Files\SafeScan\TA\TADATA.FDB` 
+gesucht, die Excel-Datei mit dem Namen `users.xlsx` im selben Ordner wie die App oder auf dem Desktop.
+
+Datenbank und Excel-Datei können auch manuell ausgewählt werden. Durch einen Klick auf `Import starten` wird der 
+Import gestartet. Die App gibt nach dem Import Auskunft über Erfolg oder Misserfolg des Imports.
+
+
+### Excel-Datei
+
+Die zu importierende Datei muss dasselbe Format haben wie die bereitgestellte Datei `users_beispiel.xlsx`. Die 
+Felder `Vorname`, `Nachname` und `Karte` müssen für jeden Benutzer ausgefüllt sein. Die Reihenfolge der Spalten 
+muss beibehalten werden. Der Import liest die Benutzer beginnend bei der zweiten Zeile.
+
+
+## Problemlösung
+
+### App
+
+Log im Verzeichnis `log` prüfen.
+
+
+### Datenbank
+
+* Doppelklick auf `Datenbankbrowser`
+* Pfad zur Datenbank im Feld `URL` prüfen/anpassen
+* Klick auf `OK`
+* Die Datenbank kann nun untersucht werden
+* `Autocommit` ist standardmässig deaktiviert, Änderungen müssen mittels `commit;` bestätigt werden
