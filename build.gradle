@@ -26,6 +26,7 @@ dependencies {
 
     compile files('lib/jaybird22.dll')
     compile files('lib/jaybird22_x64.dll')
+    compile files('lib/fbembed.dll')
 }
 
 repositories {
