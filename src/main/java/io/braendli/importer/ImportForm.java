@@ -66,7 +66,7 @@ public class ImportForm extends Application {
         importButton.disableProperty().bind(excelField.textProperty().isEmpty().or(databaseField.textProperty().isEmpty()));
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
         launch(args);
     }
 

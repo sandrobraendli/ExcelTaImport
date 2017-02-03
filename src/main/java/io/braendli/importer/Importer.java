@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.List;
 
@@ -18,6 +19,19 @@ import static java.util.stream.StreamSupport.stream;
 
 public class Importer {
     private static final Logger LOG = LoggerFactory.getLogger(Importer.class);
+
+    static {
+        try {
+            System.setProperty("java.library.path", new File("lib").getAbsolutePath());
+            Field sysPaths = ClassLoader.class.getDeclaredField("sys_paths");
+            sysPaths.setAccessible(true);
+            sysPaths.set(null, null);
+            Class.forName("org.firebirdsql.gds.impl.jni.JniGDSImpl");
+            LOG.debug("Native library loaded");
+        } catch (Exception e) {
+            LOG.error("Loading native library failed", e);
+        }
+    }
 
     public static void importToDatabase(boolean deleteOldData, File excelFile, File databaseFile) throws Exception {
         try (Connection con = getDatabaseConnection(databaseFile)) {
