@@ -73,16 +73,30 @@ public class Importer {
     }
 
     private static void insertData(List<List<Cell>> list, Connection con) throws SQLException {
-        String sql = String.format("INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME, IDCARD) VALUES(%1$s, %1$s, ?, ?, ?)", "coalesce((select max(id) + 1 from users), 100)");
+        String insertString = "INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME, IDCARD) VALUES(?, ?, ?, ?, ?)";
+        int id = getStartId(con);
 
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (PreparedStatement insertStmt = con.prepareStatement(insertString)) {
             for (List<Cell> row : list) {
                 LOG.debug("Importing user: {}", row);
                 int pos = 1;
-                stmt.setString(pos++, row.get(pos - 2).getStringCellValue());
-                stmt.setString(pos++, row.get(pos - 2).getStringCellValue());
-                stmt.setInt(pos++, (int) row.get(pos - 2).getNumericCellValue());
-                stmt.execute();
+                insertStmt.setInt(pos++, id);
+                insertStmt.setInt(pos++, id);
+                insertStmt.setString(pos++, row.get(pos - 4).getStringCellValue());
+                insertStmt.setString(pos++, row.get(pos - 4).getStringCellValue());
+                insertStmt.setInt(pos++, (int) row.get(pos - 4).getNumericCellValue());
+                insertStmt.execute();
+                id++;
+            }
+        }
+    }
+
+    private static int getStartId(Connection con) throws SQLException {
+        try (Statement stmt = con.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("select max(id) from users")) {
+                rs.next();
+                int id = rs.getInt(1);
+                return  id < 100 ? 100 : id + 1;
             }
         }
     }
