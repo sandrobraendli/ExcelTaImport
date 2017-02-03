@@ -5,7 +5,8 @@
 
 Die App wird durch einen Doppelklick auf `ExcelTaImport.exe` gestartet. Falls die ensprechenden Dateien existieren, 
 werden Datenbank und Excel-Datei vorausgewählt. Die Datenbank wird unter `C:\Program Files\SafeScan\TA\TADATA.FDB` 
-gesucht, die Excel-Datei mit dem Namen `users.xlsx` im selben Ordner wie die App oder auf dem Desktop.
+gesucht, die Excel-Datei mit dem Namen `users.xlsx` im selben Ordner wie die App oder auf dem Desktop. Die App wird
+wird mit grosser Wahrscheinlichkeit nicht auf 64 Bit Systemen funktionieren
 
 Datenbank und Excel-Datei können auch manuell ausgewählt werden. Durch einen Klick auf `Import starten` wird der 
 Import gestartet. Die App gibt nach dem Import Auskunft über Erfolg oder Misserfolg des Imports.
