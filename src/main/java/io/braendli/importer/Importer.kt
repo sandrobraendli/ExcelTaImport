@@ -76,7 +76,7 @@ object Importer {
                 LOG.debug("Importing user: {}", row)
                 var pos = 1
                 insertStmt.setInt(pos++, id)
-                insertStmt.setInt(pos++, id)
+                insertStmt.setString(pos++, "${row[pos - 3]} ${row[pos - 2]}")
                 insertStmt.setString(pos++, row[pos - 4].stringCellValue)
                 insertStmt.setString(pos++, row[pos - 4].stringCellValue)
                 insertStmt.setInt(pos++, row[pos - 4].numericCellValue.toInt())
