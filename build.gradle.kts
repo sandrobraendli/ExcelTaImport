@@ -1,7 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    `build-scan`
     kotlin("jvm") version "1.2.21"
     id("edu.sc.seis.launch4j") version "2.3.0"
 }
