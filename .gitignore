@@ -1,6 +1,6 @@
 .gradle
 build
 log
-gradlew
 .idea/workspace.xml
+.idea/dictionaries
 out
