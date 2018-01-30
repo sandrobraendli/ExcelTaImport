@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    `build-scan`
     kotlin("jvm") version "1.2.21"
     id("edu.sc.seis.launch4j") version "2.3.0"
 }
@@ -27,7 +28,7 @@ dependencies {
     compile(files("lib/jaybird22.dll"))
     compile(files("lib/jaybird22_x64.dll"))
     compile(files("lib/fbembed.dll"))
-    compile(kotlin("stdlib"))
+    compile(kotlin("stdlib-jdk8"))
 }
 
 repositories {
