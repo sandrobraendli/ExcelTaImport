@@ -1,15 +1,14 @@
 package io.braendli.importer
 
-import org.apache.poi.ss.usermodel.*
-import org.slf4j.Logger
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.Row
+import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.slf4j.LoggerFactory
-
 import java.io.File
 import java.io.FileInputStream
-import java.io.InputStream
-import java.lang.reflect.Field
-import java.sql.*
-
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.SQLException
 import java.util.stream.Collectors.toList
 import java.util.stream.StreamSupport.stream
 

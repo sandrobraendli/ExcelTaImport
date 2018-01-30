@@ -9,14 +9,11 @@ import javafx.scene.control.Button
 import javafx.scene.control.CheckBox
 import javafx.scene.control.TextField
 import javafx.scene.image.Image
-import javafx.scene.layout.GridPane
 import javafx.stage.FileChooser
 import javafx.stage.FileChooser.ExtensionFilter
 import javafx.stage.Stage
 import org.controlsfx.control.NotificationPane
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 import java.io.File
 import java.io.IOException
 
@@ -101,10 +98,9 @@ class ImportForm : Application() {
     companion object {
         private val LOG = LoggerFactory.getLogger(ImportForm::class.java)
 
-        @Throws(ClassNotFoundException::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            Application.launch(*args)
+            Application.launch(ImportForm::class.java)
         }
     }
 }
