@@ -28,7 +28,6 @@ object Importer {
         }
     }
 
-    @Throws(Exception::class)
     fun importToDatabase(deleteOldData: Boolean, excelFile: File, databaseFile: File) {
         getDatabaseConnection(databaseFile).use { con ->
             LOG.info("Start reading exel file: {}", excelFile)
@@ -43,7 +42,6 @@ object Importer {
         }
     }
 
-    @Throws(SQLException::class)
     private fun deleteOldData(con: Connection) {
         con.createStatement().use { stmt ->
             stmt.execute("delete from attendant where userid >= 100")
@@ -51,14 +49,12 @@ object Importer {
         }
     }
 
-    @Throws(SQLException::class)
     private fun getDatabaseConnection(databaseFile: File): Connection {
         val conString = String.format("jdbc:firebirdsql:embedded:%s?encoding=NONE", databaseFile.absolutePath)
         LOG.info("Connecting to database: {}", conString)
         return DriverManager.getConnection(conString, "SYSDBA", "a")
     }
 
-    @Throws(Exception::class)
     private fun readExcel(excelFile: File): List<List<Cell>> {
         FileInputStream(excelFile).use { inp ->
             val wb = WorkbookFactory.create(inp)
@@ -71,7 +67,6 @@ object Importer {
         }
     }
 
-    @Throws(SQLException::class)
     private fun insertData(list: List<List<Cell>>, con: Connection) {
         val insertString = "INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME, IDCARD) VALUES(?, ?, ?, ?, ?)"
         var id = getStartId(con)
@@ -91,7 +86,6 @@ object Importer {
         }
     }
 
-    @Throws(SQLException::class)
     private fun getStartId(con: Connection): Int {
         con.createStatement().use { stmt ->
             stmt.executeQuery("select max(id) from users").use { rs ->

@@ -29,6 +29,15 @@ class ImportForm : Application() {
     @FXML
     private lateinit var databaseField: TextField
 
+    companion object {
+        private val LOG = LoggerFactory.getLogger(ImportForm::class.java)
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            Application.launch(ImportForm::class.java)
+        }
+    }
+
     @FXML
     fun handleChooseExcel() {
         val fileChooser = FileChooser()
@@ -45,9 +54,9 @@ class ImportForm : Application() {
         updateTextField(databaseField, fileChooser.showOpenDialog(stage))
     }
 
-    private fun updateTextField(field: TextField?, file: File?) {
+    private fun updateTextField(field: TextField, file: File?) {
         if (file != null && file.exists()) {
-            field!!.text = file.absolutePath
+            field.text = file.absolutePath
         }
     }
 
@@ -92,15 +101,6 @@ class ImportForm : Application() {
             LOG.error("Import failed", e)
         } finally {
             notification.show()
-        }
-    }
-
-    companion object {
-        private val LOG = LoggerFactory.getLogger(ImportForm::class.java)
-
-        @JvmStatic
-        fun main(args: Array<String>) {
-            Application.launch(ImportForm::class.java)
         }
     }
 }
