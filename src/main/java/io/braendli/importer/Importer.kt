@@ -15,7 +15,7 @@ import java.util.stream.StreamSupport.stream
 
 object Importer {
     private val LOG = LoggerFactory.getLogger(Importer::class.java)
-    private val IMPORT_START_ID = 100
+    private const val IMPORT_START_ID = 100
 
     init {
         try {
