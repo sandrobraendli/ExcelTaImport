@@ -15,6 +15,7 @@ import java.util.stream.StreamSupport.stream
 
 object Importer {
     private val LOG = LoggerFactory.getLogger(Importer::class.java)
+    private val IMPORT_START_ID = 100
 
     init {
         try {
@@ -45,13 +46,13 @@ object Importer {
 
     private fun deleteOldData(con: Connection) {
         con.createStatement().use { stmt ->
-            stmt.execute("delete from attendant where userid >= 100")
-            stmt.execute("delete from users where id >= 100")
+            stmt.execute("delete from attendant where userid >= $IMPORT_START_ID")
+            stmt.execute("delete from users where id >= $IMPORT_START_ID")
         }
     }
 
     private fun getDatabaseConnection(databaseFile: File): Connection {
-        val conString = String.format("jdbc:firebirdsql:embedded:%s?encoding=NONE", databaseFile.absolutePath)
+        val conString = "jdbc:firebirdsql:embedded:${databaseFile.absolutePath}?encoding=NONE"
         LOG.info("Connecting to database: {}", conString)
         return DriverManager.getConnection(conString, "SYSDBA", "a")
     }
@@ -114,7 +115,7 @@ object Importer {
             stmt.executeQuery("select max(id) from users").use { rs ->
                 rs.next()
                 val id = rs.getInt(1)
-                return if (id < 100) 100 else id + 1
+                return if (id < IMPORT_START_ID) IMPORT_START_ID else id + 1
             }
         }
     }
