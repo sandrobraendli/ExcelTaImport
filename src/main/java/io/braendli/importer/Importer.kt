@@ -6,8 +6,10 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileInputStream
+import java.nio.charset.StandardCharsets
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.PreparedStatement
 import java.util.stream.Collectors.toList
 import java.util.stream.StreamSupport.stream
 
@@ -30,14 +32,14 @@ object Importer {
     fun importToDatabase(deleteOldData: Boolean, excelFile: File, databaseFile: File) {
         getDatabaseConnection(databaseFile).use { con ->
             LOG.info("Start reading exel file: {}", excelFile)
-            val cells = readExcel(excelFile)
+            val users = readExcel(excelFile)
 
             if (deleteOldData) {
                 LOG.info("Deleting old data")
                 deleteOldData(con)
             }
             LOG.info("Importing into database")
-            insertData(cells, con)
+            insertData(users, con)
         }
     }
 
@@ -54,36 +56,58 @@ object Importer {
         return DriverManager.getConnection(conString, "SYSDBA", "a")
     }
 
-    private fun readExcel(excelFile: File): List<List<Cell>> {
+    private fun readExcel(excelFile: File): List<User> {
         FileInputStream(excelFile).use { inp ->
             val wb = WorkbookFactory.create(inp)
             val sheet = wb.getSheetAt(0)
 
             return stream<Row>(sheet.spliterator(), false).skip(1)
                     .map { r -> stream<Cell>(r.spliterator(), false).collect(toList()) }
-                    .filter { l -> l.size >= 3 && !l.contains(null) }
+                    .filter { l -> l.size >= 6 && !l.contains(null) }
+                    .map(::toUser)
                     .collect(toList())
         }
     }
 
-    private fun insertData(list: List<List<Cell>>, con: Connection) {
-        val insertString = "INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME, IDCARD) VALUES(?, ?, ?, ?, ?)"
+    private fun toUser(cells: List<Cell>): User {
+        var i = 0
+        return User(
+            "${cells[++i]}",
+            "${cells[++i]}",
+            "${cells[++i]}",
+            "${cells[++i]}",
+            cells[++i].numericCellValue.toInt()
+        )
+    }
+
+    private fun insertData(list: List<User>, con: Connection) {
+        val insertString = """INSERT INTO USERS(ID, USERNAME, FIRSTNAME, LASTNAME, EMAIL, STREET, IDCARD)
+             VALUES(?, ?, ?, ?, ?, ?, ?)"""
         var id = getStartId(con)
 
         con.prepareStatement(insertString).use { insertStmt ->
-            for (row in list) {
-                LOG.debug("Importing user: {}", row)
-                var pos = 1
-                insertStmt.setInt(pos++, id)
-                insertStmt.setString(pos++, "${row[pos - 3]} ${row[pos - 2]}")
-                insertStmt.setString(pos++, row[pos - 4].stringCellValue)
-                insertStmt.setString(pos++, row[pos - 4].stringCellValue)
-                insertStmt.setInt(pos++, row[pos - 4].numericCellValue.toInt())
-                insertStmt.execute()
+            for (user in list) {
+                LOG.debug("Importing user: {}", user)
+                insertUser(id, user, insertStmt)
                 id++
             }
         }
     }
+
+    private fun insertUser(id: Int, user: User, insertStmt: PreparedStatement) {
+        val (first, last, grad, funktion, card) = user
+        var pos = 0
+        insertStmt.setInt(++pos, id)
+        insertStmt.setBytes(++pos, encode("$first $last"))
+        insertStmt.setBytes(++pos, encode(first))
+        insertStmt.setBytes(++pos, encode(last))
+        insertStmt.setBytes(++pos, encode(grad))
+        insertStmt.setBytes(++pos, encode(funktion))
+        insertStmt.setInt(++pos, card)
+        insertStmt.execute()
+    }
+
+    private fun encode(text: String) = text.toByteArray(StandardCharsets.ISO_8859_1)
 
     private fun getStartId(con: Connection): Int {
         con.createStatement().use { stmt ->
